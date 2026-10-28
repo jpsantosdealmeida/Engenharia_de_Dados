@@ -1,17 +1,11 @@
 pedidos = [
-    "PED-001;ENTREGUE;350.00;São Paulo",
-    "PED-002;PENDENTE;780.50;Campinas",
-    "PED-003;entregue;120.00;Santos",
-    "PED-004;CANCELADO;500.00;Sorocaba",
-    "PED-005;PENDENTE;250.00;São José dos Campos",
-    "PED-006; ENTREGUE ; 890.00 ; Taubaté ",
-    "PED-007;ENTREGUE;0;Jacareí",
-    "PED-008;PENDENTE;-150.00;Guarulhos",
-    "PED-009;DESCONHECIDO;300.00;Osasco",
-    "PED-010;ENTREGUE;450.00;São Paulo",
-    "PED-011;PENDENTE;620.00",
-    "PED-012;ENTREGUE;abc;Campinas"
+ 
+    "PED-013;ENTREGUE;250.00;",
+    "PED-014;ENTREGUE;250.00;   ",
+    "PED-015;PENDENTE;100.00;Campinas;EXTRA",
+    "PED-016;ENTREGUE;300.00;São Paulo"
 ]
+
 
 cancelados = 0 
 entregues = 0 
@@ -22,15 +16,14 @@ total = 0
 
 
 for pedido in pedidos: 
-    id = pedido.split(';')[0].strip()
-    status = pedido.split(';')[1].strip().lower()
-    valor = pedido.split(';')[2].strip()
+    campo = pedido.split(';')
+    id = campo[0].strip()
 
-   
-    
     # Verificando se tem cidade
-    if len(pedido.split(';')) == 4:
-        cidade = pedido.split(';')[3].strip()
+    if len(campo) == 4 and campo[3].strip() != '':
+        cidade = campo[3].strip()
+        status = campo[1].strip().lower()
+        valor = campo[2].strip()
     else:
         print(f'Pedido: {id} sem cidade ,corrigir.')
         erros += 1
@@ -60,8 +53,9 @@ for pedido in pedidos:
         # Para valores < 0 e negativos 
         else:
             print(f'Pedido: {id} com valor incorreto: {valor},corrigir.')
+            erros += 1
             continue
-    except :
+    except ValueError:
         print(f'Pedido: {id} com valor incorreto: {valor},corrigir.')
         erros += 1
         continue
@@ -79,10 +73,12 @@ for pedido in pedidos:
             Valor: {valor}
             Cidade: {cidade}
 ------------------------------''')
-
-ticketmedio = total / entregues
-print(round(ticketmedio,2))    
-print(erros)
-print(cancelados)
-print(entregues)
-print(total)
+if entregues > 0:
+    ticketmedio = total / entregues
+else:
+    ticketmedio = 0
+print(f'Ticket Médio: {round(ticketmedio,2)}')    
+print(f'Erros: {erros}')
+print(f'Cancelados: {cancelados}')
+print(f'Entregues: {entregues}')
+print(f'Valor Total dos Entregues: {total}')
