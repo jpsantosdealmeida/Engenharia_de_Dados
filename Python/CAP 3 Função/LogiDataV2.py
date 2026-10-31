@@ -47,13 +47,13 @@ valores_validos = validador_valores(lista_tratada)
 
     
 
-def processamento():
-# O programa deverá identificar registros inválidos, contar os pedidos válidos por status e calcular o valor total dos pedidos entregues.
-    validos = 0
+def processamento(lista_tratada):
     entregues = 0 
     cancelados = 0 
+    pendentes = 0
     valor_total_entregues = 0 
     invalidos = 0
+    desconhecidos = 0
     index_invalidos = []
 
 
@@ -63,20 +63,41 @@ def processamento():
             invalidos += 1
             index_invalidos.append(x)
 
-    # Vou usar while para treinar ele também
     c = 0
-    
-    
-    while c < len(index_invalidos):
-        valores_validos.pop() # Removendo os ultimos
+    while c < len(lista_tratada):
+        if c in (index_invalidos):
+            c += 1
+            continue
+            
+        else:
+            status = lista_tratada[c][1].lower()
+            if status == 'entregue':
+                valor_total_entregues += float(lista_tratada[c][2])
+                entregues += 1
+                
+            elif status == 'pendente':
+                pendentes += 1
+            elif status == 'cancelado':
+                cancelados += 1
+            else:
+                desconhecidos += 1
+            
+
         c += 1
-        print(valores_validos)
-
     
-    
-        
-processamento()
-
-
+    print("\n" + "="*40)
+    print("       RELATÓRIO DE PROCESSAMENTO       ")
+    print("="*40)
+    print(f" Registros Inválidos : {invalidos}")
+    print("-"*40)
+    print(f"  └─ Entregues       : {entregues}")
+    print(f"  └─ Pendentes       : {pendentes}")
+    print(f"  └─ Cancelados      : {cancelados}")
+    print(f"  └─ Desconhecidos   : {desconhecidos}")
+    print("-"*40)
+    print(f" Faturamento Entregue: R$ {valor_total_entregues:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
+    print("="*40 + "\n")
+         
+processamento(lista_tratada)
 
 

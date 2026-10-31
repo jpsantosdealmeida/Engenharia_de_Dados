@@ -44,3 +44,10 @@ qual utilizar?
 Vai precisar utilizar o resultado para algo depois? return
 se não pode fazer o que tem que ser feito na func
 """
+
+# a função abaixo o primeiro arg é posicional e o que vem depois é nomeados
+def gerar_objeto_personalizado(cor,*,altura,formato ):
+    print(f'O objeto foi gerado com sucesso!')
+    print(f'Cor: {cor} | Altura: {altura} | Formato: {formato}')
+
+gerar_objeto_personalizado('Azul',altura=1.2,formato='Circular')
