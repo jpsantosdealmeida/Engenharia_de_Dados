@@ -1,256 +1,151 @@
-# ============================================================
-# CAPÍTULO 2 — FUNÇÕES EM PYTHON
-# TEMA: FUNÇÕES ANINHADAS E DECORATORS
-# ============================================================
-#
-# OBJETIVO:
-# Entender como uma função pode:
-# - Ser armazenada em uma variável.
-# - Ser passada como argumento para outra função.
-# - Ser retornada por outra função.
-# - Ser definida dentro de outra função.
-# - Ser utilizada com decorators.
-#
-# REGRA:
-# Não avance para o próximo exercício sem entender o anterior.
-# Não precisa utilizar conceitos que ainda não estudamos.
-#
-# ============================================================
-# EXERCÍCIO 01 — FUNÇÃO COMO VARIÁVEL
-# DIFICULDADE: FÁCIL
-# ============================================================
-#
-# 1. Crie uma função chamada saudacao().
-# 2. Dentro dela, imprima "Bem-vindo ao Python!".
-# 3. Crie uma variável chamada mensagem.
-# 4. Atribua a função saudacao à variável mensagem,
-#    sem executar a função nesse momento.
-# 5. Execute a função utilizando a variável mensagem.
-#
-# PERGUNTAS:
-# - Qual a diferença entre mensagem = saudacao e mensagem = saudacao()?
-# mensagem = saudacao - Obj mensagem faz referencia a def saudacao , para executar preciso chamar mensagem()
-# e mensagem = saudacao() - Já estou executando a função ...
-# - O que acontece quando utilizamos mensagem()?
-# Executada a impressão 
-
-def saudacao():
-    print("Bem-vindo ao Python!")
-
-mensagem = saudacao
-
+from datetime import datetime
+from time import sleep
 
 # ============================================================
-# EXERCÍCIO 02 — FUNÇÃO COMO ARGUMENTO
-# DIFICULDADE: FÁCIL
+# DESAFIO 07 — REFATORAÇÃO DE CÓDIGO
+# PROJETO: LOGIDATA
 # ============================================================
 #
-# 1. Crie uma função chamada mostrar_mensagem().
-# 2. Ela deverá imprimir "Processamento concluído!".
+# CENÁRIO:
+# Uma transportadora possui um programa que processa pedidos.
+# O código funciona, mas concentra muitas responsabilidades.
 #
-# 3. Crie outra função chamada executar_funcao(funcao).
-# 4. Essa função deverá:
-#    - Imprimir "Iniciando execução".
-#    - Executar a função recebida como argumento.
-#    - Imprimir "Execução finalizada".
+# SUA MISSÃO:
+# Refatorar o programa utilizando os conceitos estudados
+# no capítulo de funções.
 #
-# 5. Passe mostrar_mensagem como argumento de executar_funcao.
+# REGRAS:
+# 1. Não alterar os dados originais.
+# 2. Manter os mesmos resultados.
+# 3. Dividir responsabilidades entre funções.
+# 4. Utilizar parâmetros e retornos adequadamente.
+# 5. Evitar depender de variáveis globais.
+# 6. Criar um decorator para registrar o início e o fim
+#    do processamento.
+# 7. Utilizar try/except para tratar valores inválidos.
 #
-# RESULTADO ESPERADO:
+# EXTRA (OPCIONAL):
+# Medir o tempo de execução com datetime.
 #
-# Iniciando execução
-# Processamento concluído!
-# Execução finalizada
-#
-# PERGUNTA:
-# - Por que passamos mostrar_mensagem sem parênteses?
-# Pq a execução é feita em executar funcao na linha 74 funcao()
-# def mostrar_mensagem():
-#     print("Processamento concluído!")
+# ============================================================
+# BASE DE DADOS
+# ============================================================
 
-
-# def executar_funcao(funcao):
-#     print("Iniciando execução")
-#     funcao()
-#     print("Execução finalizada")
-
-# executar_funcao(mostrar_mensagem)
+pedidos = [
+    "PED-001;ENTREGUE;350.00;São Paulo",
+    "PED-002;PENDENTE;780.50;Campinas",
+    "PED-003;ENTREGUE;120.00;Santos",
+    "PED-004;CANCELADO;500.00;Sorocaba",
+    "PED-005;ENTREGUE;abc;Jacareí",
+    "PED-006;ENTREGUE;-100.00;Taubaté",
+    "PED-007;PENDENTE;250.00;São Paulo",
+    "PED-008;ENTREGUE;890.00;Campinas",
+    "PED-009;DESCONHECIDO;300.00;Santos",
+    "PED-010;ENTREGUE;450.00;São Paulo"
+]
 
 # ============================================================
-# EXERCÍCIO 03 — RETORNANDO UMA FUNÇÃO
-# DIFICULDADE: INTERMEDIÁRIA
+# CÓDIGO LEGADO — NÃO ESTÁ REFATORADO
 # ============================================================
-#
-# 1. Crie uma função chamada selecionar_operacao(numero).
-#
-# 2. Dentro dela, crie duas funções:
-#
-#    - somar():
-#      Deverá imprimir o resultado de 10 + 5.
-#
-#    - multiplicar():
-#      Deverá imprimir o resultado de 10 * 5.
-#
-# 3. Na função selecionar_operacao:
-#
-#    - Se numero == 1, retorne a função somar.
-#    - Se numero == 2, retorne a função multiplicar.
-#
-# 4. Armazene o retorno de selecionar_operacao(1)
-#    em uma variável chamada resultado.
-#
-# 5. Execute resultado().
-#
-# 6. Repita o processo utilizando selecionar_operacao(2).
-#
-# RESULTADOS ESPERADOS:
-#
-# Operação 1: 15
-# Operação 2: 50
-#
-# PERGUNTAS:
-# - O que está armazenado em resultado?
-# - Por que retornar somar é diferente de retornar somar()?
-def selecionar_operacao(numero):
-    if numero == 1:
-        def somar():
-            print(10+5)
 
+print("=" * 45)
+print("INICIANDO PROCESSAMENTO LOGÍSTICO")
+print("=" * 45)
 
-# def selecionar_operacao(numero):
-#     if numero == 1:
-#         def somar():
-#             return 10 + 5
+inicio = datetime.now()
+
+entregues = 0
+pendentes = 0
+cancelados = 0
+
+faturamento = 0
+
+# ============================================================
+# FUNÇÕES
+# ============================================================
+
+def validar_invalidos(tamanho = 0,codigo = '0',cidade = '0',status = 'entregue'):
+
+    invalidos = 0
+    if tamanho != 4:
+        invalidos += 1
+
+    if codigo == "" or cidade == "":
+        invalidos += 1
+
+    if status not in ["entregue", "pendente", "cancelado"]:
+        invalidos += 1
+
+    
         
-#     elif numero == 2:
-#         def multiplicar():
-#             return 10 * 5
 
-#     else:
-#         print(f'Número {numero} inválido.')
+    
+        
+    return invalidos
 
 
+for pedido in pedidos:
+
+    campos = pedido.split(";")
+
+    # if len(campos) != 4:
+    #     invalidos += 1
+    #     continue
+
+    codigo = campos[0].strip()
+    status = campos[1].strip().lower()
+    valor = campos[2].strip()
+    cidade = campos[3].strip()
 
 
-# ============================================================
-# EXERCÍCIO 04 — CRIANDO UM DECORATOR MANUALMENTE
-# DIFICULDADE: INTERMEDIÁRIA
-# ============================================================
-#
-# 1. Crie uma função chamada registrar_execucao(funcao).
-#
-# 2. Dentro dela, crie outra função chamada wrapper().
-#
-# 3. A função wrapper deverá:
-#
-#    - Imprimir "Iniciando processamento..."
-#    - Executar a função recebida em registrar_execucao.
-#    - Imprimir "Processamento finalizado!"
-#
-# 4. A função registrar_execucao deverá retornar wrapper,
-#    sem executá-la.
-#
-# 5. Fora dessas funções, crie processar_dados().
-#    Ela deverá imprimir "Processando registros...".
-#
-# 6. Faça a seguinte chamada:
-#
-#    resultado = registrar_execucao(processar_dados)
-#
-# 7. Execute resultado().
-#
-# RESULTADO ESPERADO:
-#
-# Iniciando processamento...
-# Processando registros...
-# Processamento finalizado!
-#
-# PERGUNTAS:
-# - Qual função está armazenada em resultado?
-# - Em que momento processar_dados é executada?
-#
-#
-# ============================================================
-# EXERCÍCIO 05 — UTILIZANDO @DECORATOR
-# DIFICULDADE: INTERMEDIÁRIA
-# ============================================================
-#
-# Agora vamos utilizar a sintaxe @.
-#
-# 1. Reaproveite a função registrar_execucao
-#    criada no exercício anterior.
-#
-# 2. Crie uma função chamada importar_arquivo().
-#    Ela deverá imprimir "Importando arquivo CSV...".
-#
-# 3. Aplique @registrar_execucao sobre importar_arquivo.
-#
-# 4. Execute importar_arquivo().
-#
-# RESULTADO ESPERADO:
-#
-# Iniciando processamento...
-# Importando arquivo CSV...
-# Processamento finalizado!
-#
-# PERGUNTAS:
-# - Qual a diferença entre o exercício 04 e o 05?
-# - O que o @registrar_execucao faz?
-# - Por que importar_arquivo() também executa wrapper()?
-#
-#
-# ============================================================
-# EXERCÍCIO 06 — QUANDO O DECORATOR É EXECUTADO?
-# DIFICULDADE: DESAFIO DE RACIOCÍNIO
-# ============================================================
-#
-# Analise o código abaixo ANTES de executá-lo.
-#
-# def decorador(funcao):
-#     print("A")
-#
-#     def wrapper():
-#         print("B")
-#         funcao()
-#         print("C")
-#
-#     return wrapper
-#
-#
-# @decorador
-# def executar():
-#     print("D")
-#
-#
-# print("E")
-# executar()
-#
-#
-# DESAFIO:
-# 1. Escreva qual será a ordem das letras no terminal.
-# 2. Execute o código para conferir.
-# 3. Explique por que a primeira letra aparece
-#    antes da chamada executar().
-# 4. Identifique quais mensagens são impressas
-#    quando o decorator é aplicado e quais são
-#    impressas quando wrapper() é executada.
-#
-#
-# ============================================================
-# CONCLUSÃO
-# ============================================================
-#
-# Ao terminar, você deverá conseguir explicar:
-#
-# 1. A diferença entre funcao e funcao().
-# 2. Como passar funções como argumentos.
-# 3. Como retornar funções.
-# 4. Como funcionam funções aninhadas.
-# 5. O papel da função wrapper.
-# 6. O significado da sintaxe @decorator.
-#
-# Não se preocupe com decorators que recebem argumentos,
-# *args, **kwargs ou functools.wraps por enquanto.
-#
-# Primeiro vamos dominar a estrutura básica.
-# ============================================================
+    validar_invalidos(tamanho= len(campos),cidade=cidade,codigo=codigo,status=status)
+
+
+invalidos = validar_invalidos()
+print(invalidos)
+
+#     if codigo == "" or cidade == "":
+#         invalidos += 1
+#         continue
+
+#     if status not in ["entregue", "pendente", "cancelado"]:
+#         invalidos += 1
+#         continue
+
+#     try:
+#         valor = float(valor)
+#     except ValueError:
+#         invalidos += 1
+#         continue
+
+#     if valor <= 0:
+#         invalidos += 1
+#         continue
+
+#     if status == "entregue":
+#         entregues += 1
+#         faturamento += valor
+
+#     elif status == "pendente":
+#         pendentes += 1
+
+#     elif status == "cancelado":
+#         cancelados += 1
+
+#     sleep(0.2)
+
+# fim = datetime.now()
+# print()
+# print("=" * 45)
+# print("RELATÓRIO FINAL")
+# print("=" * 45)
+
+# print(f"Pedidos entregues: {entregues}")
+# print(f"Pedidos pendentes: {pendentes}")
+# print(f"Pedidos cancelados: {cancelados}")
+# print(f"Pedidos inválidos: {invalidos}")
+# print(f"Faturamento: R$ {faturamento:.2f}")
+
+# print("=" * 45)
+# print(f"Tempo de execução: {fim - inicio}")
+# print("=" * 45)

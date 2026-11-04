@@ -1,24 +1,44 @@
+# def func(funcao):
+#     print('Preparando decorator')
+
+#     def wrapper():
+#         print('Início')
+#         funcao()
+#         print('Fim')
+
+#     return wrapper()
+
+# '''
+# @ decorador é a mesma coisa de fazer
+# def executar():
+#     print('Executando tarefa')
+
+# Estou passando executar como arg em decorador 
+# '''
+# @func
+# def executar():
+#     print('Executando tarefa')
+
+
+# executar()
+
+from datetime import datetime
+from time import sleep
+
 def decorador(funcao):
-    print('Preparando decorator')
+    data_atual = datetime.now().date().strftime('%d/%m/%Y')
 
-    def wrapper():
-        print('Início')
+    def embalagem():
+        print(f'Horário antes da execucação: {data_atual}')
+        sleep(5)
         funcao()
-        print('Fim')
+        sleep(5)
+        print(f'Horário após a finalização da execucação: {data_atual}')
 
-    return wrapper()
+    return embalagem
 
-'''
-@ decorador é a mesma coisa de fazer
-def executar():
-    print('Executando tarefa')
-
-Estou passando executar como arg em decorador 
-'''
 @decorador
-def executar():
-    print('Executando tarefa')
+def saudacao():
+    print('Aplicação está em execucação! ')
 
-
-print('Programa iniciado')
-executar()
+saudacao()
