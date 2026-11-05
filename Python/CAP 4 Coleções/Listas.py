@@ -34,3 +34,33 @@ matriz_de_nomes = [['Carol', 30], ['Marcus', 50]]
 print(matriz_de_nomes[0])
 print(matriz_de_nomes[0][0])
 print(matriz_de_nomes[1][0])
+
+
+
+''' 
+
+Desafio #1 Crie uma lista que tenha os nomes dos 3 objetos que você mais usa durante o dia e imprima ele na tela
+
+Desafio #2 Usando apenas uma linha de código, crie uma lista de 10 a 131
+
+Desafio #3 Imprima na tela o resultado da combinação da lista do desafio 1 e desafio 2
+
+Desafio #4 Crie uma lista de listas(matriz) que tenha os nomes dos 3 objetos
+
+ que você mais usa durante o dia, mas agora dentro de cada item você vai colocar 
+
+uma informação extra, coloque o valor em reais desse objeto também e imprima ele 
+
+na tela  '''
+
+#1
+objetos = ['papel','caneta','celular']
+print(objetos)
+#2
+l = list(range(10,131))
+print(l)
+#3
+l.extend(objetos)
+print(l)
+#4
+matriz = [['papel',1],['caneta',2],['celular',3]]

@@ -47,9 +47,10 @@ pedidos.append("PED-005")
 pedidos.insert(0,"PED-000")
 pedidos.remove("PED-003")
 pedidos.pop(-1)
+
 print(pedidos.index("PED-002"))
 print(pedidos.index("PED-004"))
-print(pedidos)
+print(f'Quantidade restantes: {len(pedidos)}')
 
 
 # ============================================================
@@ -98,6 +99,7 @@ print(fretes)
 fretes.reverse()
 print(fretes)
 print(fretes_novo)
+print(30 * '-=')
 # ============================================================
 # EXERCÍCIO 03 — ÍNDICES E FATIAMENTO
 # DIFICULDADE: INTERMEDIÁRIA
@@ -128,10 +130,23 @@ entregas = [
 # DESAFIOS:
 #
 # - Qual a diferença entre entregas[-1] e entregas[:-1]?
+# -1 pega a ultima ocorrencia e :-1 vai do index 0 até a ultima não incluso
 # - O índice final de um slicing é incluído?
+#não
 # - O que representa o terceiro argumento do slicing?
-#
-#
+# os passos
+# print(entregas[0:3])
+# print(entregas[-3:])
+# print(entregas[2:6])
+# print(entregas[::-1])
+# print(entregas[::2])
+# print(entregas[-1])
+# print(entregas[:-1])
+# entregas_nova = entregas[entregas.index('Campinas'):entregas.index('Jacareí')+1]
+
+
+
+
 # ============================================================
 # EXERCÍCIO 04 — LIMPEZA DE DADOS
 # DIFICULDADE: INTERMEDIÁRIA
@@ -171,8 +186,35 @@ cidades = [
 #
 # - Como identificar duplicatas sem utilizar set()?
 # - Por que padronizar antes de verificar duplicatas?
-#
-#
+def limpar_cidades(lista):
+    # nova lista
+    lista_tratada = []
+
+    # laço para percorrer lista passada como argumento
+    for item in lista:
+        if item.strip() == '':
+            continue
+        else:
+            lista_tratada.append(item.strip().capitalize())
+
+    lista_tratada_2 = []
+
+    for i in lista_tratada:
+        if i not in lista_tratada_2:
+            lista_tratada_2.append(i)
+    return lista_tratada_2
+
+    # laço para percorrer a nova lista e remover duplicatas
+    # for i in lista_tratada:
+    #    if lista_tratada.count(i) == 2:
+    #        lista_tratada.pop()
+
+    
+           
+    
+
+lista_tratada = limpar_cidades(cidades)
+print(lista_tratada)
 # ============================================================
 # EXERCÍCIO 05 — LISTAS ANINHADAS
 # DIFICULDADE: INTERMEDIÁRIA
@@ -186,6 +228,10 @@ pedidos_logistica = [
     ["PED-005", "ENTREGUE", 890.00],
     ["PED-006", "PENDENTE", 250.00]
 ]
+
+
+# APRENDIZADO, O SORTED NÃO MODIFICA A LISTA, RETORNA UMA NOVA
+
 #
 # TAREFAS:
 #
@@ -202,14 +248,49 @@ pedidos_logistica = [
 # - Como acessar o valor de um pedido específico?
 # - Como ordenar uma lista de listas pelo terceiro elemento?
 # - É possível resolver sem alterar a lista original?
-#
-#
+def ped_logistica(lista):
+    entregue = 0
+    pendente = 0
+    cancelado = 0
+    faturamento = 0
+    maior_faturamento = 0
+    lista_pendentes = []
+    
+    for item in lista:
+        pedido = item[0].strip()
+        status = item[1].strip()
+        valor = float(item[2])
+
+        if status == 'PENDENTE':
+            pendente += 1
+            lista_pendentes.append(item)
+        elif status == 'ENTREGUE':
+            entregue += 1
+            faturamento += valor
+            maior_faturamento = valor
+            if valor > maior_faturamento:
+                maior_faturamento = valor
+        else:
+            cancelado += 1
+    print(entregue)
+    print(faturamento)
+    print(maior_faturamento)
+    print(lista_pendentes)
+    
+ped_logistica(pedidos_logistica)
+
+nova_ordem_pedidos_logistica = sorted(pedidos_logistica, key= lambda x: x[2], reverse=True)
+
+print("--- ORDENADO POR MAIOR VALOR ---")
+for i in nova_ordem_pedidos_logistica: print(i)
+
 # ============================================================
 # EXERCÍCIO 06 — REMOÇÃO SEGURA DE ELEMENTOS
 # DIFICULDADE: INTERMEDIÁRIA / AVANÇADA
 # ============================================================
 #
-valores = [350, -100, 780, 0, 120, -50, 890, 0, 250]
+# valores = [350, -100, 780, 0, 120, -50, 890, 0, 250]
+valores = [350, -100, 0, -50, 780, 120]
 #
 # TAREFAS:
 #
@@ -229,8 +310,17 @@ valores = [350, -100, 780, 0, 120, -50, 890, 0, 250]
 #   uma lista pode causar problemas?
 # - Como controlar corretamente o índice do while?
 # - Seria possível percorrer a lista de trás para frente?
-#
-#
+
+c = 0
+while c < len(valores):
+    
+    if valores[c] <= 0:
+        valores.pop(c)
+
+    else:
+        c+=1
+        continue
+print(valores)
 # ============================================================
 # EXERCÍCIO 07 — MINI PROJETO: LOGIDATA V3
 # DIFICULDADE: DESAFIO FINAL
