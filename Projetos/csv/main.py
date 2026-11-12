@@ -2,6 +2,8 @@ from pathlib import Path
 import csv
 import logging
 from collections import Counter
+import numpy as np
+
 # Definindo log
 logger = logging.getLogger(__name__)
 logging.basicConfig(filename='exemplo.log', encoding='utf-8', level=logging.DEBUG)
@@ -13,6 +15,8 @@ caminho_csv_items = Path.cwd() / 'Projetos' / 'dados' / 'olist_order_items_datas
 caminho_csv_pagamentos = Path.cwd() / 'Projetos' / 'dados' / 'olist_order_payments_dataset.csv'
 
 caminho_csv_pedidos = Path.cwd() / 'Projetos' / 'dados' / 'olist_orders_dataset.csv'
+
+
 
 def step1_exploracao(caminho):
     with open(caminho,'r',encoding='utf-8',newline='') as arq:
@@ -56,7 +60,11 @@ csv_pedidos,cabecalho_pedidos,linhas_pedidos = step1_exploracao(caminho_csv_pedi
 # Possíveis colunas de relação
 relacionamentos = step1_verif_relacionamentos(cabecalho_items,cabecalho_pagamentos,cabecalho_pedidos)
 
-def step2_exploracao_csv(caminho,coluna):
+def analisar_ids(caminho,coluna):
+
+    
+
+    nome_arquivo = caminho.stem
     contador = Counter()
     dicio_ids_repetidos = {}
     with open(caminho,'r',encoding='utf-8',newline='') as arq:
@@ -65,8 +73,8 @@ def step2_exploracao_csv(caminho,coluna):
         leitor = csv.DictReader(arq)
 
         for linha in leitor:
-            
-            contador.update([linha[coluna]])
+            # for col in coluna:
+                contador.update([linha[coluna]])
             
         total_registros = contador.total()
         total_registros_diferentes = len(contador)
@@ -79,14 +87,29 @@ def step2_exploracao_csv(caminho,coluna):
         order_ids_repetidos = len(dicio_ids_repetidos)
         total_registros_excedentes = total_registros - total_registros_diferentes
 
-        print(f'Total de registros: {total_registros}')
-        print(f'Total de order_id distintos: {total_registros_diferentes}')
-        print(f'Quantidade de order_id repetidos: {order_ids_repetidos}')
-        print(f'Quantidade de ocorrências excedentes: {total_registros_excedentes}')
-    
-        
+        # Retorno do tratamento
+        return {
+            'nome_arquivo': nome_arquivo,
+            'total_registros': total_registros,
+            'total_registros_diferentes': total_registros_diferentes,
+            'order_ids_repetidos': order_ids_repetidos,
+            'total_registros_excedentes': total_registros_excedentes,
+            'dicio_ids_repetidos': dicio_ids_repetidos
+            }       
 
-step2_exploracao_csv(caminho_csv_pagamentos,relacionamentos.pop())
+
+arquivos = [caminho_csv_items,caminho_csv_pagamentos,caminho_csv_pedidos]
+for caminho in arquivos:
+    resultado = analisar_ids(caminho,'order_id')
+
+    print(f"\nArquivo: {resultado['nome_arquivo']}")
+    print(f"Total de registros: {resultado['total_registros']}")
+    print(f"IDs distintos: {resultado['total_registros_diferentes']}")
+    print(f"IDs repetidos: {resultado['order_ids_repetidos']}")
+    print(f"Ocorrências excedentes: {resultado['total_registros_excedentes']}")
+
+
+
 
     
 
